@@ -21,3 +21,11 @@ end
 def stock_count(count)
   count[:pets].length
 end
+
+def pets_by_breed(hash, breed)
+  total_breed = []
+  for pets in hash[:pets]
+      total_breed.push(breed) if pets[:breed] == breed
+    end
+    return total_breed
+end
