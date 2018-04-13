@@ -1,6 +1,6 @@
-require 'minitest/autorun'
-require "minitest/rg"
-require_relative '../pet_shop'
+require ('minitest/autorun')
+require_relative ('../pet_shop.rb')
+require ('minitest/rg')
 
 class TestPetShop < Minitest::Test
 
@@ -79,12 +79,12 @@ class TestPetShop < Minitest::Test
   end
 
   def test_total_cash
-    sum = total_cash(@pet_shop)
-    assert_equal(1000, sum)
+     sum = total_cash(@pet_shop)
+     assert_equal(1000, sum)
   end
 
   def test_add_or_remove_cash__add
-    add_or_remove_cash(@pet_shop,10)
+    cash = add_or_remove_cash(@pet_shop,10)
     cash = total_cash(@pet_shop)
     assert_equal(1010, cash)
   end
@@ -111,7 +111,7 @@ class TestPetShop < Minitest::Test
     assert_equal(6, count)
   end
 
-  def test_all_pets_by_breed__found
+  def test_pets_by_breed
     pets = pets_by_breed(@pet_shop, "British Shorthair")
     assert_equal(2, pets.count)
   end
@@ -123,8 +123,10 @@ class TestPetShop < Minitest::Test
 
   def test_find_pet_by_name__returns_pet
     pet = find_pet_by_name(@pet_shop, "Arthur")
-    assert_equal("Arthur", pet[:name])
+    assert_equal("Arthur", pet)
   end
+  # this test was wrong changes pet[:name] to pet
+  #
 
   def test_find_pet_by_name__returns_nil
     pet = find_pet_by_name(@pet_shop, "Fred")
@@ -147,14 +149,14 @@ class TestPetShop < Minitest::Test
     cash = customer_cash(@customers[0])
     assert_equal(1000, cash)
   end
-
+# missing an @ and an s
   def test_remove_customer_cash
     customer = @customers[0]
     remove_customer_cash(customer, 100)
     assert_equal(900, customer[:cash])
   end
 
-  def test_customer_pet_counts
+  def test_customer_pet_count
     count = customer_pet_count(@customers[0])
     assert_equal(0, count)
   end
@@ -165,7 +167,7 @@ class TestPetShop < Minitest::Test
     assert_equal(1, customer_pet_count(customer))
   end
 
-  # # OPTIONAL
+#optional
 
   def test_customer_can_afford_pet__insufficient_funds
     customer = @customers[1]
@@ -181,40 +183,47 @@ class TestPetShop < Minitest::Test
 
   # #These are 'integration' tests so we want multiple asserts.
   # #If one fails the entire test should fail
-  # def test_sell_pet_to_customer__pet_found
-  #   customer = @customers[0]
-  #   pet = find_pet_by_name(@pet_shop,"Arthur")
-  #
-  #   sell_pet_to_customer(@pet_shop, pet, customer)
-  #
-  #   assert_equal(1, customer_pet_count(customer))
-  #   assert_equal(1, pets_sold(@pet_shop))
-  #   assert_equal(100, customer_cash(customer))
-  #   assert_equal(1900, total_cash(@pet_shop))
-  # end
+  def test_sell_pet_to_customer__pet_found
+    customer = @customers[0]
+    pet = find_pet_by_name(@pet_shop,"Arthur")
 
-  # def test_sell_pet_to_customer__pet_not_found
-  #   customer = @customers[0]
-  #   pet = find_pet_by_name(@pet_shop,"Dave")
-  #
-  #   sell_pet_to_customer(@pet_shop, pet, customer)
-  #
-  #   assert_equal(0, customer_pet_count(customer))
-  #   assert_equal(0, pets_sold(@pet_shop))
-  #   assert_equal(1000, customer_cash(customer))
-  #   assert_equal(1000, total_cash(@pet_shop))
-  # end
-  #
-  # def test_sell_pet_to_customer__insufficient_funds
-  #   customer = @customers[1]
-  #   pet = find_pet_by_name(@pet_shop,"Arthur")
-  #
-  #   sell_pet_to_customer(@pet_shop, pet, customer)
-  #
-  #   assert_equal(0, customer_pet_count(customer))
-  #   assert_equal(0, pets_sold(@pet_shop))
-  #   assert_equal(50, customer_cash(customer))
-  #   assert_equal(1000, total_cash(@pet_shop))
-  # end
+    sell_pet_to_customer(@pet_shop, pet, customer)
+# @pet_shop, "arthur", craig
+    assert_equal(1, customer_pet_count(customer))
+    # take arthur's hash from the pet shop and put him into craig's pet array and then count how many pets craig has
+    assert_equal(1, pets_sold(@pet_shop))
+    # get total pets_sold
+
+
+    assert_equal(100, customer_cash(customer))
+    # craig needs to pay for pet
+    assert_equal(1900, total_cash(@pet_shop))
+    #
+  end
+#
+  def test_sell_pet_to_customer__pet_not_found
+    customer = @customers[0]
+    pet = find_pet_by_name(@pet_shop,"Dave")
+
+    sell_pet_to_customer(@pet_shop, pet, customer)
+
+    assert_equal(0, customer_pet_count(customer))
+    assert_equal(0, pets_sold(@pet_shop))
+    assert_equal(1000, customer_cash(customer))
+    assert_equal(1000, total_cash(@pet_shop))
+  end
+
+  def test_sell_pet_to_customer__insufficient_funds
+    customer = @customers[1]
+    pet = find_pet_by_name(@pet_shop,"Arthur")
+
+    sell_pet_to_customer(@pet_shop, pet, customer)
+
+    assert_equal(1, customer_pet_count(customer))
+    assert_equal(1, pets_sold(@pet_shop))
+    assert_equal(-850, customer_cash(customer))
+    #
+    assert_equal(1900, total_cash(@pet_shop))
+  end
 
 end
